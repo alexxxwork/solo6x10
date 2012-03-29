@@ -27,12 +27,12 @@
 
 #include "solo6010.h"
 
-static int multi_p2m;
+static int multi_p2m = 1;
 module_param(multi_p2m, uint, 0644);
 MODULE_PARM_DESC(multi_p2m, "Allow 6010 to use multiple P2M DMA channels"
 		 " (default is single, does not affect 6110)");
 
-static int desc_mode;
+static int desc_mode = 1;
 module_param(desc_mode, uint, 0644);
 MODULE_PARM_DESC(desc_mode, "Allow use of descriptor mode DMA"
 		 " (default is disabled, does not affect 6110)");
@@ -61,7 +61,6 @@ int solo_p2m_dma(struct solo6010_dev *solo_dev, int wr,
 	return ret;
 }
 
-/* Mutex must be held for p2m_id before calling this!! */
 int solo_p2m_dma_desc(struct solo6010_dev *solo_dev,
 		      struct solo_p2m_desc *desc, dma_addr_t desc_dma,
 		      int desc_cnt)
@@ -96,6 +95,9 @@ int solo_p2m_dma_desc(struct solo6010_dev *solo_dev,
 		solo_reg_write(solo_dev, SOLO_P2M_DESC_ID(p2m_id), desc_cnt);
 		solo_reg_write(solo_dev, SOLO_P2M_CONFIG(p2m_id), config |
 			       SOLO_P2M_DESC_MODE);
+
+		solo_dev->p2m_multi_desc += desc_cnt;
+		timeout = (desc_cnt - 1) * solo_dev->p2m_jiffies;
 	} else {
 		/* For single descriptors and 6110, we need to run each desc */
 		p2m_dev->desc_count = desc_cnt;
@@ -113,7 +115,7 @@ int solo_p2m_dma_desc(struct solo6010_dev *solo_dev,
 	}
 
 	timeout = wait_for_completion_timeout(&p2m_dev->completion,
-					      solo_dev->p2m_jiffies);
+					      timeout);
 
 	if (WARN_ON_ONCE(p2m_dev->error))
 		ret = -EIO;

@@ -121,23 +121,32 @@ static irqreturn_t solo6010_isr(int irq, void *data)
 	if (status & SOLO_IRQ_PCI_ERR)
 		solo_p2m_error_isr(solo_dev);
 
-	for (i = 0; i < SOLO_NR_P2M; i++)
-		if (status & SOLO_IRQ_P2M(i))
+	for (i = 0; i < SOLO_NR_P2M; i++) {
+		if (status & SOLO_IRQ_P2M(i)) {
+			solo_dev->isr_p2m++;
 			solo_p2m_isr(solo_dev, i);
+		}
+	}
 
-	if (status & SOLO_IRQ_IIC)
+	if (status & SOLO_IRQ_IIC) {
+		solo_dev->isr_i2c++;
 		solo_i2c_isr(solo_dev);
+	}
 
 	if (status & SOLO_IRQ_VIDEO_IN) {
 		solo_video_in_isr(solo_dev);
 		solo_timer_sync(solo_dev);
 	}
 
-	if (status & SOLO_IRQ_ENCODER)
+	if (status & SOLO_IRQ_ENCODER) {
+		solo_dev->isr_enc++;
 		solo_enc_v4l2_isr(solo_dev);
+	}
 
-	if (status & SOLO_IRQ_G723)
+	if (status & SOLO_IRQ_G723) {
+		solo_dev->isr_g723++;
 		solo_g723_isr(solo_dev);
+	}
 
 	/* Clear all interrupts handled */
 	solo_reg_write(solo_dev, SOLO_IRQ_STAT, status);
@@ -254,14 +263,41 @@ static ssize_t video_type_show(struct device *dev,
 		       SOLO_VO_FMT_TYPE_NTSC ? "NTSC" : "PAL");
 }
 
-static ssize_t p2m_timeouts_show(struct device *dev,
-				 struct device_attribute *attr,
-				 char *buf)
+static ssize_t some_stats_show(struct device *dev,
+			       struct device_attribute *attr,
+			       char *buf)
 {
 	struct solo6010_dev *solo_dev =
 		container_of(dev, struct solo6010_dev, dev);
+	char *out = buf;
 
-	return sprintf(buf, "%d\n", solo_dev->p2m_timeouts);
+	out += sprintf(out, "P2M Timeouts  : %u\n",
+		       solo_dev->p2m_timeouts);
+	out += sprintf(out, "P2M Multi Desc: %u\n",
+		       solo_dev->p2m_multi_desc);
+	out += sprintf(out, "P2M Wrap      : %u\n",
+		       solo_dev->p2m_wrap);
+	out += sprintf(out, "Ring Errors   : %u\n",
+		       solo_dev->ring_errors);
+
+	return out - buf;
+}
+
+static ssize_t isr_counts_show(struct device *dev,
+			       struct device_attribute *attr,
+			       char *buf)
+{
+	struct solo6010_dev *solo_dev =
+		container_of(dev, struct solo6010_dev, dev);
+	char *out = buf;
+
+	out += sprintf(out, "I2C : %u\n", solo_dev->isr_i2c);
+	out += sprintf(out, "P2M : %u\n", solo_dev->isr_p2m);
+	out += sprintf(out, "ENC : %u\n", solo_dev->isr_enc);
+	out += sprintf(out, "G723: %u\n", solo_dev->isr_g723);
+	out += sprintf(out, "VID : %u\n", solo_dev->isr_vid_in);
+
+	return out - buf;
 }
 
 static ssize_t sdram_size_show(struct device *dev,
@@ -446,12 +482,13 @@ static struct device_attribute solo_dev_attrs[] = {
 	__ATTR(eeprom, 0640, eeprom_show, eeprom_store),
 	__ATTR(video_type, 0644, video_type_show, video_type_store),
 	__ATTR(p2m_timeout, 0644, p2m_timeout_show, p2m_timeout_store),
-	__ATTR_RO(p2m_timeouts),
+	__ATTR_RO(some_stats),
 	__ATTR_RO(sdram_size),
 	__ATTR_RO(tw28xx),
 	__ATTR_RO(input_map),
 	__ATTR_RO(intervals),
 	__ATTR_RO(sdram_offsets),
+	__ATTR_RO(isr_counts),
 };
 
 static void solo_device_release(struct device *dev)
@@ -698,6 +735,8 @@ static DEFINE_PCI_DEVICE_TABLE(solo6010_id_table) = {
 	{ PCI_DEVICE(PCI_VENDOR_ID_BLUECHERRY, PCI_DEVICE_ID_BC_SOLO_16),
 	  .driver_data = SOLO_DEV_6010 },
 	/* 6110 based cards */
+	{ PCI_DEVICE(PCI_VENDOR_ID_SOFTLOGIC, PCI_DEVICE_ID_SOLO6110),
+	  .driver_data = SOLO_DEV_6110 },
 	{ PCI_DEVICE(PCI_VENDOR_ID_BLUECHERRY, PCI_DEVICE_ID_BC_6110_4),
 	  .driver_data = SOLO_DEV_6110 },
 	{ PCI_DEVICE(PCI_VENDOR_ID_BLUECHERRY, PCI_DEVICE_ID_BC_6110_8),

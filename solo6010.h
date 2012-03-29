@@ -48,6 +48,7 @@
 #ifndef PCI_VENDOR_ID_SOFTLOGIC
 #define PCI_VENDOR_ID_SOFTLOGIC		0x9413
 #define PCI_DEVICE_ID_SOLO6010		0x6010
+#define PCI_DEVICE_ID_SOLO6110		0x6110
 #endif
 
 #ifndef PCI_VENDOR_ID_BLUECHERRY
@@ -210,6 +211,12 @@ struct solo6010_dev {
 	atomic_t		p2m_count;
 	int			p2m_jiffies;
 	unsigned int		p2m_timeouts;
+	unsigned int		p2m_multi_desc;
+	unsigned int		p2m_wrap;
+
+	/* Interrupt accounting */
+	unsigned int		isr_p2m, isr_enc, isr_vid_in, isr_i2c, isr_g723;
+	unsigned int		ring_errors;
 
 	/* V4L2 Display items */
 	struct video_device	*vfd;
@@ -246,6 +253,12 @@ struct solo6010_dev {
 	int			sdram_size;
 	struct bin_attribute	sdram_attr;
 	unsigned int		sys_config;
+
+	/* P2M Descriptors */
+	int			desc_count;
+	int			desc_nelts;
+	struct solo_p2m_desc	*desc_items;
+	dma_addr_t		desc_dma;
 
 	/* Ring thread */
 	struct task_struct	*ring_thread;

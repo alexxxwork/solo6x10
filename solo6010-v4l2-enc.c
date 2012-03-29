@@ -35,10 +35,12 @@
 #include "solo6010-tw28.h"
 #include "solo6010-jpeg.h"
 
-#define MIN_VID_BUFFERS		2
+/* This accounts for 4 in the queue and 1 in use. Since we can handle up
+ * to 4 frames per interrupt, this is needed to prevent frame dropping */
+#define MIN_VID_BUFFERS		5
 #define FRAME_BUF_SIZE		(196 * 1024)
 #define MP4_QS			16
-#define DMA_ALIGN		4096
+#define DMA_ALIGN		PAGE_SIZE
 
 enum solo_enc_types {
 	SOLO_ENC_TYPE_STD,
@@ -52,10 +54,6 @@ struct solo_enc_fh {
 	enum solo_enc_types	type;
 	struct videobuf_queue	vidq;
 	struct list_head	vidq_active;
-	int			desc_count;
-	int			desc_nelts;
-        struct solo_p2m_desc	*desc_items;
-	dma_addr_t		desc_dma;
 	spinlock_t		av_lock;
 	struct list_head	list;
 };
@@ -462,16 +460,17 @@ static int enc_get_mpeg_dma(struct solo6010_dev *solo_dev, dma_addr_t dma,
 			     size + off - SOLO_MP4E_EXT_SIZE(solo_dev), 0, 0);
 	}
 
+	solo_dev->p2m_wrap++;
+
 	return ret;
 }
 
 /* Build a descriptor queue out of an SG list and send it to the P2M for
  * processing. */
-static int solo_send_desc(struct solo_enc_fh *fh, int skip,
+static int solo_fill_desc(struct solo6010_dev *solo_dev, int skip,
 			  struct videobuf_dmabuf *vbuf, int off, int size,
 			  unsigned int base, unsigned int base_size)
 {
-	struct solo6010_dev *solo_dev = fh->enc->solo_dev;
 	struct scatterlist *sg;
 	int i;
 	int ret;
@@ -479,15 +478,13 @@ static int solo_send_desc(struct solo_enc_fh *fh, int skip,
 	if (WARN_ON_ONCE(size > FRAME_BUF_SIZE))
 		return -EINVAL;
 
-	fh->desc_count = 1;
-
 	for_each_sg(vbuf->sglist, sg, vbuf->sglen, i) {
 		struct solo_p2m_desc *desc;
 		dma_addr_t dma;
 		int len;
 		int left = base_size - off;
 
-		desc = &fh->desc_items[fh->desc_count++];
+		desc = &solo_dev->desc_items[solo_dev->desc_count++];
 		dma = sg_dma_address(sg);
 		len = sg_dma_len(sg);
 
@@ -508,22 +505,16 @@ static int solo_send_desc(struct solo_enc_fh *fh, int skip,
 					   len, 0, 0);
 		} else {
 			/* Buffer wrap */
-			/* XXX: Do these as separate DMA requests, to avoid
-			   timeout errors triggered by awkwardly sized
-			   descriptors. See
-			   <https://github.com/bluecherrydvr/solo6x10/issues/8>
-			 */
-			ret = solo_p2m_dma_t(solo_dev, 0, dma, base + off,
-			                     left, 0, 0);
-			if (ret)
-				return ret;
+			solo_p2m_fill_desc(desc, 0, dma, base + off, left,
+					   0, 0);
+ 
+			/* Get another descriptor */
+			desc = &solo_dev->desc_items[solo_dev->desc_count++];
+ 
+			solo_p2m_fill_desc(desc, 0, dma + left, base,
+					   len - left, 0, 0);
 
-			ret = solo_p2m_dma_t(solo_dev, 0, dma + left, base,
-			                     len - left, 0, 0);
-			if (ret)
-				return ret;
-
-			fh->desc_count--;
+			solo_dev->p2m_wrap++;
 		}
 
 		size -= len;
@@ -534,22 +525,20 @@ static int solo_send_desc(struct solo_enc_fh *fh, int skip,
 		if (off >= base_size)
 			off -= base_size;
 
-		/* Because we may use two descriptors per loop */
-		if (fh->desc_count >= (fh->desc_nelts - 1)) {
-			ret = solo_p2m_dma_desc(solo_dev, fh->desc_items,
-						fh->desc_dma,
-						fh->desc_count - 1);
+		/* Because we may use two descriptors per loop. */
+		/* XXX Failure here could result in weirdness for videobufs
+		 * that have been marked as ok, but in actuality are bad now */
+		if (solo_dev->desc_count >= (solo_dev->desc_nelts - 1)) {
+			ret = solo_p2m_dma_desc(solo_dev, solo_dev->desc_items,
+						solo_dev->desc_dma,
+						solo_dev->desc_count - 1);
 			if (ret)
 				return ret;
-			fh->desc_count = 1;
+			solo_dev->desc_count = 1;
 		}
 	}
 
-	if (fh->desc_count <= 1)
-		return 0;
-
-	return solo_p2m_dma_desc(solo_dev, fh->desc_items, fh->desc_dma,
-				 fh->desc_count - 1);
+	return 0;
 }
 
 static int solo_fill_jpeg(struct solo_enc_fh *fh, struct videobuf_buffer *vb,
@@ -576,7 +565,7 @@ static int solo_fill_jpeg(struct solo_enc_fh *fh, struct videobuf_buffer *vb,
 	frame_size = (vh->jpeg_size + solo_enc->jpeg_len + (DMA_ALIGN - 1))
 		& ~(DMA_ALIGN - 1);
 
-	return solo_send_desc(fh, solo_enc->jpeg_len, vbuf, vh->jpeg_off,
+	return solo_fill_desc(solo_dev, solo_enc->jpeg_len, vbuf, vh->jpeg_off,
 			      frame_size, SOLO_JPEG_EXT_ADDR(solo_dev),
 			      SOLO_JPEG_EXT_SIZE(solo_dev));
 }
@@ -617,7 +606,7 @@ static int solo_fill_mpeg(struct solo_enc_fh *fh, struct videobuf_buffer *vb,
 	frame_size = (vh->mpeg_size + skip + (DMA_ALIGN - 1))
 		& ~(DMA_ALIGN - 1);
 
-	return solo_send_desc(fh, skip, vbuf, frame_off, frame_size,
+	return solo_fill_desc(solo_dev, skip, vbuf, frame_off, frame_size,
 			      SOLO_MP4E_EXT_ADDR(solo_dev),
 			      SOLO_MP4E_EXT_SIZE(solo_dev));
 }
@@ -666,19 +655,17 @@ vbuf_error:
 		vb->state = VIDEOBUF_QUEUED;
 		spin_unlock_irqrestore(&fh->av_lock, flags);
 	} else {
-		vb->state = VIDEOBUF_DONE;
 		vb->field_count++;
 		vb->width = solo_enc->width;
 		vb->height = solo_enc->height;
-
-		wake_up(&vb->done);
 	}
 
 	return ret;
 }
 
 static void solo_enc_handle_one(struct solo_enc_dev *solo_enc,
-				struct solo_enc_buf *enc_buf)
+				struct solo_enc_buf *enc_buf,
+				struct list_head *vbs)
 {
 	struct solo_enc_fh *fh;
 
@@ -705,7 +692,8 @@ static void solo_enc_handle_one(struct solo_enc_dev *solo_enc,
 
 		spin_unlock_irqrestore(&fh->av_lock, flags);
 
-		solo_enc_fillbuf(fh, vb, enc_buf);
+		if (!solo_enc_fillbuf(fh, vb, enc_buf))
+			list_add(&vb->queue, vbs);
 	}
 
 	mutex_unlock(&solo_enc->enable_lock);
@@ -718,6 +706,12 @@ void solo_enc_v4l2_isr(struct solo6010_dev *solo_dev)
 
 static void solo_handle_ring(struct solo6010_dev *solo_dev)
 {
+	struct videobuf_buffer *vb;
+	LIST_HEAD(vbs);
+	int ret;
+
+	solo_dev->desc_count = 1;
+
 	for (;;) {
 		struct solo_enc_dev *solo_enc;
 		struct solo_enc_buf enc_buf;
@@ -752,23 +746,39 @@ static void solo_handle_ring(struct solo6010_dev *solo_dev)
 
 		/* FAIL... */
 		if (enc_get_mpeg_dma(solo_dev, solo_dev->vh_dma, off,
-				     sizeof(struct vop_header)))
+				     sizeof(struct vop_header))) {
+			solo_dev->ring_errors++;
 			continue;
+		}
 
 		enc_buf.vh = (struct vop_header *)solo_dev->vh_buf;
 		enc_buf.vh->mpeg_off -= SOLO_MP4E_EXT_ADDR(solo_dev);
 		enc_buf.vh->jpeg_off -= SOLO_JPEG_EXT_ADDR(solo_dev);
 
 		/* Sanity check */
-		if (enc_buf.vh->mpeg_off != off)
+		if (enc_buf.vh->mpeg_off != off) {
+			solo_dev->ring_errors++;
 			continue;
+		}
 
 		if (solo_motion_detected(solo_enc))
 			enc_buf.motion = 1;
 		else
 			enc_buf.motion = 0;
 
-		solo_enc_handle_one(solo_enc, &enc_buf);
+		solo_enc_handle_one(solo_enc, &enc_buf, &vbs);
+	}
+
+	if (solo_dev->desc_count <= 1)
+		return;
+
+	ret = solo_p2m_dma_desc(solo_dev, solo_dev->desc_items,
+				solo_dev->desc_dma,
+				solo_dev->desc_count - 1);
+
+	list_for_each_entry(vb, &vbs, queue) {
+		vb->state = ret ? VIDEOBUF_ERROR : VIDEOBUF_DONE;
+		wake_up(&vb->done);
 	}
 }
 
@@ -931,16 +941,6 @@ static int solo_enc_open(struct inode *ino, struct file *file)
 		return -ENOMEM;
 	}
 
-	fh->desc_nelts = 32;
-	fh->desc_items = pci_alloc_consistent(solo_dev->pdev,
-				      sizeof(struct solo_p2m_desc) *
-				      fh->desc_nelts, &fh->desc_dma);
-	if (fh->desc_items == NULL) {
-		kfree(fh);
-		solo_ring_stop(solo_dev);
-		return -ENOMEM;
-	}
-
 	fh->enc = solo_enc;
 	spin_lock_init(&fh->av_lock);
 	file->private_data = fh;
@@ -996,10 +996,6 @@ static int solo_enc_release(struct inode *ino, struct file *file)
 
 	videobuf_stop(&fh->vidq);
 	videobuf_mmap_free(&fh->vidq);
-
-	pci_free_consistent(fh->enc->solo_dev->pdev,
-			    sizeof(struct solo_p2m_desc) *
-			    fh->desc_nelts, fh->desc_items, fh->desc_dma);
 
 	kfree(fh);
 
@@ -1767,6 +1763,17 @@ int solo_enc_v4l2_init(struct solo6010_dev *solo_dev, unsigned nr)
 	if (solo_dev->vh_buf == NULL)
 		return -ENOMEM;
 
+	solo_dev->desc_nelts = 192;
+	solo_dev->desc_items = pci_alloc_consistent(solo_dev->pdev,
+					sizeof(struct solo_p2m_desc) *
+					solo_dev->desc_nelts,
+					&solo_dev->desc_dma);
+	if (solo_dev->desc_items == NULL) {
+		pci_free_consistent(solo_dev->pdev, solo_dev->vh_size,
+				    solo_dev->vh_buf, solo_dev->vh_dma);
+		return -ENOMEM;
+	}
+
 	for (i = 0; i < solo_dev->nr_chans; i++) {
 		solo_dev->v4l2_enc[i] = solo_enc_alloc(solo_dev, i, nr);
 		if (IS_ERR(solo_dev->v4l2_enc[i]))
@@ -1777,6 +1784,10 @@ int solo_enc_v4l2_init(struct solo6010_dev *solo_dev, unsigned nr)
 		int ret = PTR_ERR(solo_dev->v4l2_enc[i]);
 		while (i--)
 			solo_enc_free(solo_dev->v4l2_enc[i]);
+		pci_free_consistent(solo_dev->pdev,
+				    sizeof(struct solo_p2m_desc) *
+				    solo_dev->desc_nelts, solo_dev->desc_items,
+				    solo_dev->desc_dma);
 		pci_free_consistent(solo_dev->pdev, solo_dev->vh_size,
 				    solo_dev->vh_buf, solo_dev->vh_dma);
 		return ret;
@@ -1801,6 +1812,13 @@ void solo_enc_v4l2_exit(struct solo6010_dev *solo_dev)
 	for (i = 0; i < solo_dev->nr_chans; i++)
 		solo_enc_free(solo_dev->v4l2_enc[i]);
 
-	pci_free_consistent(solo_dev->pdev, solo_dev->vh_size,
-			    solo_dev->vh_buf, solo_dev->vh_dma);
+	if (solo_dev->desc_items)
+		pci_free_consistent(solo_dev->pdev,
+				    sizeof(struct solo_p2m_desc) *
+				    solo_dev->desc_nelts, solo_dev->desc_items,
+				    solo_dev->desc_dma);
+
+	if (solo_dev->vh_buf)
+		pci_free_consistent(solo_dev->pdev, solo_dev->vh_size,
+				    solo_dev->vh_buf, solo_dev->vh_dma);
 }
