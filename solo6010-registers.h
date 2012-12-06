@@ -114,11 +114,11 @@
  * EEPROM Access
  */
 #define SOLO_EEPROM_CTRL			0x0060
-#define	  SOLO_EEPROM_ACCESS_EN			(1<<7)
-#define	  SOLO_EEPROM_CS			(1<<3)
-#define	  SOLO_EEPROM_CLK			(1<<2)
-#define	  SOLO_EEPROM_DO			(1<<1)
-#define	  SOLO_EEPROM_DI			(1<<0)
+#define	  SOLO_EEPROM_ACCESS_EN			(1 << 7)
+#define	  SOLO_EEPROM_CS		        (1 << 3)
+#define	  SOLO_EEPROM_CLK			(1 << 2)
+#define	  SOLO_EEPROM_DO			(1 << 1)
+#define	  SOLO_EEPROM_DI			(1 << 0)
 #define	  SOLO_EEPROM_ENABLE (SOLO_EEPROM_ACCESS_EN | SOLO_EEPROM_CS)
 
 
