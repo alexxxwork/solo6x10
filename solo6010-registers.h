@@ -137,54 +137,57 @@
 #define   SOLO_PCI_ERR_FSM1(s)			(((s) >> 20) & 0x0f)
 #define   SOLO_PCI_ERR_FSM2(s)			(((s) >> 24) & 0x1f)
 
-#define SOLO_P2M_BASE				0x0080
 
-#define SOLO_P2M_CONFIG(n)			(0x0080 + ((n)*0x20))
-#define	  SOLO_P2M_DMA_INTERVAL(n)		((n)<<6)/* N*32 clocks */
-#define	  SOLO_P2M_CSC_BYTE_REORDER		(1<<5)	/* BGR -> RGB */
+/*
+ * P2M
+ */
+#define SOLO_P2M_CONFIG(n)			(0x0080 + (((n) & 3) << 5))
+#define	  SOLO_P2M_DMA_INTERVAL(n)		(((n) & 0x1f) << 6)	/* N*32 clocks */
+#define	  SOLO_P2M_CSC_BYTE_REORDER		(1 << 5)	/* BGR -> RGB */
 /* 0:r=[14:10] g=[9:5] b=[4:0], 1:r=[15:11] g=[10:5] b=[4:0] */
-#define	  SOLO_P2M_CSC_16BIT_565		(1<<4)
-#define	  SOLO_P2M_UV_SWAP			(1<<3)
-#define	  SOLO_P2M_PCI_MASTER_MODE		(1<<2)
-#define	  SOLO_P2M_DESC_INTR_OPT		(1<<1)	/* 1:Empty, 0:Each */
-#define	  SOLO_P2M_DESC_MODE			(1<<0)
+#define	  SOLO_P2M_CSC_16BIT_565		(1 << 4)
+#define	  SOLO_P2M_UV_SWAP			(1 << 3)
+#define	  SOLO_P2M_PCI_MASTER_MODE		(1 << 2)
+#define	  SOLO_P2M_DESC_INTR_OPT		(1 << 1)	/* 1:Empty, 0:Each */
+#define	  SOLO_P2M_DESC_MODE			(1 << 0)
 
-#define SOLO_P2M_DES_ADR(n)			(0x0084 + ((n)*0x20))
+#define SOLO_P2M_DES_ADR(n)			(0x0084 + (((n) & 3) << 5))
 
-#define SOLO_P2M_DESC_ID(n)			(0x0088 + ((n)*0x20))
-#define	  SOLO_P2M_UPDATE_ID(n)			((n)<<0)
+/* In solo6110, the following register range is used for endianness
+ * selection (which we don't use). */
+#define SOLO_P2M_DESC_ID(n)			(0x0088 + (((n) & 3) << 5))
+#define	  SOLO_P2M_UPDATE_ID(n)			(n)
 
-#define SOLO_P2M_STATUS(n)			(0x008C + ((n)*0x20))
-#define	  SOLO_P2M_COMMAND_DONE			(1<<8)
-#define	  SOLO_P2M_CURRENT_ID(stat)		(0xff & (stat))
+#define SOLO_P2M_STATUS(n)			(0x008C + (((n) & 3) << 5))
+#define	  SOLO_P2M_COMMAND_DONE			(1 << 8)
+#define	  SOLO_P2M_CURRENT_ID(stat)		((stat) && 0xff)
 
-#define SOLO_P2M_CONTROL(n)			(0x0090 + ((n)*0x20))
-#define	  SOLO_P2M_PCI_INC(n)			((n)<<20)
-#define	  SOLO_P2M_REPEAT(n)			((n)<<10)
-/* 0:512, 1:256, 2:128, 3:64, 4:32, 5:128(2page) */
-#define	  SOLO_P2M_BURST_SIZE(n)		((n)<<7)
-#define	    SOLO_P2M_BURST_512			0
-#define	    SOLO_P2M_BURST_256			1
-#define	    SOLO_P2M_BURST_128			2
-#define	    SOLO_P2M_BURST_64			3
-#define	    SOLO_P2M_BURST_32			4
-#define	  SOLO_P2M_CSC_16BIT			(1<<6)	/* 0:24bit, 1:16bit */
+#define SOLO_P2M_CONTROL(n)			(0x0090 + (((n) & 3) << 5))
+#define	  SOLO_P2M_PCI_INC(n)			(((n) & ~3) << 18)
+#define	  SOLO_P2M_REPEAT(n)			(((n) & 0x3ff) << 10)
+/* Burst size: 0:512, 1:256, 2:128, 3:64, 4:32, 5:128(2page) */
+#define   SOLO_P2M_BURST_512			(0 << 7)
+#define   SOLO_P2M_BURST_256			(1 << 7)
+#define   SOLO_P2M_BURST_128			(2 << 7)
+#define   SOLO_P2M_BURST_64			(3 << 7)
+#define   SOLO_P2M_BURST_32			(4 << 7)
+#define	  SOLO_P2M_CSC_16BIT			(1 << 6)	/* 0:24bit, 1:16bit */
 /* 0:Y[0]<-0(OFF), 1:Y[0]<-1(ON), 2:Y[0]<-G[0], 3:Y[0]<-Bit[15] */
-#define	  SOLO_P2M_ALPHA_MODE(n)		((n)<<4)
-#define	  SOLO_P2M_CSC_ON			(1<<3)
-#define	  SOLO_P2M_INTERRUPT_REQ		(1<<2)
-#define	  SOLO_P2M_WRITE			(1<<1)
-#define	  SOLO_P2M_TRANS_ON			(1<<0)
+#define	  SOLO_P2M_ALPHA_MODE(n)		(((n) & 3) << 4)
+#define	  SOLO_P2M_CSC_ON			(1 << 3)
+#define	  SOLO_P2M_INTERRUPT_REQ		(1 << 2)
+#define	  SOLO_P2M_WRITE(n)			(((n) & 1) << 1)
+#define	  SOLO_P2M_TRANS_ON			(1 << 0)
 
-#define SOLO_P2M_EXT_CFG(n)			(0x0094 + ((n)*0x20))
-#define	  SOLO_P2M_EXT_INC(n)			((n)<<20)
-#define	  SOLO_P2M_COPY_SIZE(n)			((n)<<0)
+#define SOLO_P2M_EXT_CFG(n)			(0x0094 + (((n) & 3) << 5))
+#define	  SOLO_P2M_EXT_INC(n)			(((n) & ~3) << 18)
+#define	  SOLO_P2M_COPY_SIZE(n)			((n) >> 2 & 0xfffff)
 
-#define SOLO_P2M_TAR_ADR(n)			(0x0098 + ((n)*0x20))
+#define SOLO_P2M_TAR_ADR(n)			(0x0098 + (((n) & 3) << 5))
 
-#define SOLO_P2M_EXT_ADR(n)			(0x009C + ((n)*0x20))
+#define SOLO_P2M_EXT_ADR(n)			(0x009C + (((n) & 3) << 5))
 
-#define SOLO_P2M_BUFFER(i)			(0x2000 + ((i)*4))
+#define SOLO_P2M_BUFFER(i)			(0x2000 + (((i) & 15) << 2))
 
 
 /*

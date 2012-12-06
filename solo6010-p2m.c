@@ -138,17 +138,16 @@ void solo_p2m_fill_desc(struct solo_p2m_desc *desc, int wr,
 			dma_addr_t dma_addr, u32 ext_addr, u32 size,
 			int repeat, u32 ext_size)
 {
-	WARN_ON_ONCE(dma_addr & 0x03);
+	WARN_ON_ONCE(dma_addr & 3);
 	WARN_ON_ONCE(!size);
 
-	desc->cfg = SOLO_P2M_COPY_SIZE(size >> 2);
-	desc->ctrl = SOLO_P2M_BURST_SIZE(SOLO_P2M_BURST_256) |
-		(wr ? SOLO_P2M_WRITE : 0) | SOLO_P2M_TRANS_ON;
+	desc->cfg = SOLO_P2M_COPY_SIZE(size);
+	desc->ctrl = SOLO_P2M_BURST_256 | SOLO_P2M_TRANS_ON
+		| SOLO_P2M_WRITE(wr);
 
 	if (repeat) {
-		desc->cfg |= SOLO_P2M_EXT_INC(ext_size >> 2);
-		desc->ctrl |=  SOLO_P2M_PCI_INC(size >> 2) |
-			 SOLO_P2M_REPEAT(repeat);
+		desc->cfg |= SOLO_P2M_EXT_INC(ext_size);
+		desc->ctrl |=  SOLO_P2M_PCI_INC(size) | SOLO_P2M_REPEAT(repeat);
 	}
 
 	desc->dma_addr = dma_addr;
