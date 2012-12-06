@@ -32,17 +32,17 @@
  * System Clock
  */
 #define SOLO_SYS_CFG				0x0000
-#define   SOLO_SYS_CFG_FOUT_EN			0x00000001
-#define   SOLO_SYS_CFG_PLL_BYPASS		0x00000002
-#define   SOLO_SYS_CFG_PLL_PWDN			0x00000004
-#define   SOLO_SYS_CFG_OUTDIV(__n)		(((__n) & 0x003) << 3)
-#define   SOLO_SYS_CFG_FEEDBACKDIV(__n)		(((__n) & 0x1ff) << 5)
-#define   SOLO_SYS_CFG_INPUTDIV(__n)		(((__n) & 0x01f) << 14)
-#define   SOLO_SYS_CFG_CLOCK_DIV		0x00080000
-#define   SOLO_SYS_CFG_NCLK_DELAY(__n)		(((__n) & 0x003) << 24)
-#define   SOLO_SYS_CFG_PCLK_DELAY(__n)		(((__n) & 0x00f) << 26)
-#define   SOLO_SYS_CFG_SDRAM64BIT		0x40000000
-#define   SOLO_SYS_CFG_RESET			0x80000000
+#define   SOLO_SYS_CFG_FOUT_EN			(1 << 0)
+#define   SOLO_SYS_CFG_PLL_BYPASS		(1 << 1)
+#define   SOLO_SYS_CFG_PLL_PWDN			(1 << 2)
+#define   SOLO_SYS_CFG_OUTDIV(n)		(((n) & 0x003) << 3)
+#define   SOLO_SYS_CFG_FEEDBACKDIV(n)		(((n) & 0x1ff) << 5)
+#define   SOLO_SYS_CFG_INPUTDIV(n)		(((n) & 0x01f) << 14)
+#define   SOLO_SYS_CFG_CLOCK_DIV		(1 << 19)
+#define   SOLO_SYS_CFG_NCLK_DELAY(n)		(((n) & 0x003) << 24)
+#define   SOLO_SYS_CFG_PCLK_DELAY(n)		(((n) & 0x00f) << 26)
+#define   SOLO_SYS_CFG_SDRAM64BIT		(1 << 30)
+#define   SOLO_SYS_CFG_RESET			(1 << 31)
 
 
 /*
