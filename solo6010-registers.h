@@ -77,24 +77,28 @@
 	 | SOLO_VCLK_VIN_DELAY((d), 12)		\
 	 | SOLO_VCLK_VIN_DELAY((d), 14))
 
-#define SOLO_IRQ_STAT				0x0010
-#define SOLO_IRQ_MASK				0x0014
-#define	  SOLO_IRQ_P2M(n)			(1<<((n)+17))
-#define	  SOLO_IRQ_GPIO				(1<<16)
-#define	  SOLO_IRQ_VIDEO_LOSS			(1<<15)
-#define	  SOLO_IRQ_VIDEO_IN			(1<<14)
-#define	  SOLO_IRQ_MOTION			(1<<13)
-#define	  SOLO_IRQ_ATA_CMD			(1<<12)
-#define	  SOLO_IRQ_ATA_DIR			(1<<11)
-#define	  SOLO_IRQ_PCI_ERR			(1<<10)
-#define	  SOLO_IRQ_PS2_1			(1<<9)
-#define	  SOLO_IRQ_PS2_0			(1<<8)
-#define	  SOLO_IRQ_SPI				(1<<7)
-#define	  SOLO_IRQ_IIC				(1<<6)
-#define	  SOLO_IRQ_UART(n)			(1<<((n) + 4))
-#define	  SOLO_IRQ_G723				(1<<3)
-#define	  SOLO_IRQ_DECODER			(1<<1)
-#define	  SOLO_IRQ_ENCODER			(1<<0)
+
+/*
+ * Interrupts
+ */
+#define SOLO_IRQ_STAT			0x0010	/* Status and Acknowledgment */
+#define SOLO_IRQ_MASK			0x0014	/* Mask */
+#define	  SOLO_IRQ_P2M(n)		(1 << (17 + ((n) & 3)))
+#define	  SOLO_IRQ_GPIO			(1 << 16)
+#define	  SOLO_IRQ_VIDEO_LOSS		(1 << 15)
+#define	  SOLO_IRQ_VIDEO_IN		(1 << 14)
+#define	  SOLO_IRQ_MOTION		(1 << 13)
+#define	  SOLO_IRQ_ATA_CMD		(1 << 12)
+#define	  SOLO_IRQ_ATA_DIR		(1 << 11)
+#define	  SOLO_IRQ_PCI_ERR		(1 << 10)
+#define	  SOLO_IRQ_PS2_1		(1 << 9)
+#define	  SOLO_IRQ_PS2_0		(1 << 8)
+#define	  SOLO_IRQ_SPI			(1 << 7)
+#define	  SOLO_IRQ_IIC			(1 << 6)
+#define	  SOLO_IRQ_UART(n)		(1 << (4 + ((n) & 1)))
+#define	  SOLO_IRQ_G723			(1 << 3)
+#define	  SOLO_IRQ_DECODER		(1 << 1)
+#define	  SOLO_IRQ_ENCODER		(1 << 0)
 
 
 /*
