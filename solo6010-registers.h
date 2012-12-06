@@ -126,16 +126,16 @@
  * PCI Error
  */
 #define SOLO_PCI_ERR				0x0070
-#define   SOLO_PCI_ERR_FATAL			0x00000001
-#define   SOLO_PCI_ERR_PARITY			0x00000002
-#define   SOLO_PCI_ERR_TARGET			0x00000004
-#define   SOLO_PCI_ERR_TIMEOUT			0x00000008
-#define   SOLO_PCI_ERR_P2M			0x00000010
-#define   SOLO_PCI_ERR_ATA			0x00000020
-#define   SOLO_PCI_ERR_P2M_DESC			0x00000040
-#define   SOLO_PCI_ERR_FSM0(__s)		(((__s) >> 16) & 0x0f)
-#define   SOLO_PCI_ERR_FSM1(__s)		(((__s) >> 20) & 0x0f)
-#define   SOLO_PCI_ERR_FSM2(__s)		(((__s) >> 24) & 0x1f)
+#define   SOLO_PCI_ERR_FATAL			(1 << 0)
+#define   SOLO_PCI_ERR_PARITY			(1 << 1)
+#define   SOLO_PCI_ERR_TARGET			(1 << 2)
+#define   SOLO_PCI_ERR_TIMEOUT			(1 << 3)
+#define   SOLO_PCI_ERR_P2M			(1 << 4)
+#define   SOLO_PCI_ERR_ATA			(1 << 5)
+#define   SOLO_PCI_ERR_P2M_DESC			(1 << 6)
+#define   SOLO_PCI_ERR_FSM0(s)			(((s) >> 16) & 0x0f)
+#define   SOLO_PCI_ERR_FSM1(s)			(((s) >> 20) & 0x0f)
+#define   SOLO_PCI_ERR_FSM2(s)			(((s) >> 24) & 0x1f)
 
 #define SOLO_P2M_BASE				0x0080
 
