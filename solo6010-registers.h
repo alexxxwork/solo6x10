@@ -63,17 +63,19 @@
  * Video Clock
  */
 #define SOLO_SYS_VCLK				0x000C
-#define	  SOLO_VCLK_INVERT			(1<<22)
+#define	  SOLO_VCLK_INVERT			(1 << 22)
 /* 0=sys_clk/4, 1=sys_clk/2, 2=clk_in/2 of system input */
-#define	  SOLO_VCLK_SELECT(n)			((n)<<20)
-#define	  SOLO_VCLK_VIN1415_DELAY(n)		((n)<<14)
-#define	  SOLO_VCLK_VIN1213_DELAY(n)		((n)<<12)
-#define	  SOLO_VCLK_VIN1011_DELAY(n)		((n)<<10)
-#define	  SOLO_VCLK_VIN0809_DELAY(n)		((n)<<8)
-#define	  SOLO_VCLK_VIN0607_DELAY(n)		((n)<<6)
-#define	  SOLO_VCLK_VIN0405_DELAY(n)		((n)<<4)
-#define	  SOLO_VCLK_VIN0203_DELAY(n)		((n)<<2)
-#define	  SOLO_VCLK_VIN0001_DELAY(n)		((n)<<0)
+#define	  SOLO_VCLK_SELECT(n)			(((n) & 3) << 20)
+#define   SOLO_VCLK_VIN_DELAY(d, pair)		(((d) & 3) << ((pair) & 0xe))
+#define   SOLO_VCLK_VIN_ALL_DELAY(d)		\
+	(SOLO_VCLK_VIN_DELAY((d), 0)		\
+	 | SOLO_VCLK_VIN_DELAY((d), 2)		\
+	 | SOLO_VCLK_VIN_DELAY((d), 4)		\
+	 | SOLO_VCLK_VIN_DELAY((d), 6)		\
+	 | SOLO_VCLK_VIN_DELAY((d), 8)		\
+	 | SOLO_VCLK_VIN_DELAY((d), 10)		\
+	 | SOLO_VCLK_VIN_DELAY((d), 12)		\
+	 | SOLO_VCLK_VIN_DELAY((d), 14))
 
 #define SOLO_IRQ_STAT				0x0010
 #define SOLO_IRQ_MASK				0x0014

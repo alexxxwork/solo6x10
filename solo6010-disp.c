@@ -50,14 +50,7 @@ static void solo_vin_config(struct solo6010_dev *solo_dev)
 
 	solo_reg_write(solo_dev, SOLO_SYS_VCLK,
 		       SOLO_VCLK_SELECT(2) |
-		       SOLO_VCLK_VIN1415_DELAY(SOLO_VCLK_DELAY) |
-		       SOLO_VCLK_VIN1213_DELAY(SOLO_VCLK_DELAY) |
-		       SOLO_VCLK_VIN1011_DELAY(SOLO_VCLK_DELAY) |
-		       SOLO_VCLK_VIN0809_DELAY(SOLO_VCLK_DELAY) |
-		       SOLO_VCLK_VIN0607_DELAY(SOLO_VCLK_DELAY) |
-		       SOLO_VCLK_VIN0405_DELAY(SOLO_VCLK_DELAY) |
-		       SOLO_VCLK_VIN0203_DELAY(SOLO_VCLK_DELAY) |
-		       SOLO_VCLK_VIN0001_DELAY(SOLO_VCLK_DELAY));
+		       SOLO_VCLK_VIN_ALL_DELAY(SOLO_VCLK_DELAY));
 
 	solo_reg_write(solo_dev, SOLO_VI_ACT_I_P,
 		       SOLO_VI_H_START(solo_dev->vin_hstart) |
