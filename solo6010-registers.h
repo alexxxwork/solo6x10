@@ -49,14 +49,14 @@
  * DMA
  */
 #define	SOLO_DMA_CTRL				0x0004
-#define	  SOLO_DMA_CTRL_REFRESH_CYCLE(n)	((n)<<8)
+#define	  SOLO_DMA_CTRL_REFRESH_CYCLE(n)	(((n) & 0x7fff) << 8)
 /* 0=16/32MB, 1=32/64MB, 2=64/128MB, 3=128/256MB */
-#define	  SOLO_DMA_CTRL_SDRAM_SIZE(n)		((n)<<6)
-#define	  SOLO_DMA_CTRL_SDRAM_CLK_INVERT	(1<<5)
-#define	  SOLO_DMA_CTRL_STROBE_SELECT		(1<<4)
-#define	  SOLO_DMA_CTRL_READ_DATA_SELECT	(1<<3)
-#define	  SOLO_DMA_CTRL_READ_CLK_SELECT		(1<<2)
-#define	  SOLO_DMA_CTRL_LATENCY(n)		((n)<<0)
+#define	  SOLO_DMA_CTRL_SDRAM_SIZE(n)		(((n) & 3) << 6)
+#define	  SOLO_DMA_CTRL_SDRAM_CLK_INVERT	(1 << 5)
+#define	  SOLO_DMA_CTRL_STROBE_SELECT		(1 << 4)
+#define	  SOLO_DMA_CTRL_READ_DATA_SELECT	(1 << 3)
+#define	  SOLO_DMA_CTRL_READ_CLK_SELECT		(1 << 2)
+#define	  SOLO_DMA_CTRL_LATENCY(n)		((n) & 3)
 
 
 /*
