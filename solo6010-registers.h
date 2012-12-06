@@ -27,7 +27,10 @@
 
 #include "solo6010-offsets.h"
 
-/* Global 6010 system configuration */
+
+/*
+ * System Clock
+ */
 #define SOLO_SYS_CFG				0x0000
 #define   SOLO_SYS_CFG_FOUT_EN			0x00000001
 #define   SOLO_SYS_CFG_PLL_BYPASS		0x00000002
@@ -41,6 +44,10 @@
 #define   SOLO_SYS_CFG_SDRAM64BIT		0x40000000
 #define   SOLO_SYS_CFG_RESET			0x80000000
 
+
+/*
+ * DMA
+ */
 #define	SOLO_DMA_CTRL				0x0004
 #define	  SOLO_DMA_CTRL_REFRESH_CYCLE(n)	((n)<<8)
 /* 0=16/32MB, 1=32/64MB, 2=64/128MB, 3=128/256MB */
@@ -51,9 +58,10 @@
 #define	  SOLO_DMA_CTRL_READ_CLK_SELECT		(1<<2)
 #define	  SOLO_DMA_CTRL_LATENCY(n)		((n)<<0)
 
-/* Some things we set in this are undocumented. Why Softlogic?!?! */
-#define SOLO_DMA_CTRL1				0x0008
 
+/*
+ * Video Clock
+ */
 #define SOLO_SYS_VCLK				0x000C
 #define	  SOLO_VCLK_INVERT			(1<<22)
 /* 0=sys_clk/4, 1=sys_clk/2, 2=clk_in/2 of system input */
@@ -86,11 +94,19 @@
 #define	  SOLO_IRQ_DECODER			(1<<1)
 #define	  SOLO_IRQ_ENCODER			(1<<0)
 
+
+/*
+ * Chip ID
+ */
 #define SOLO_CHIP_OPTION			0x001C
 #define   SOLO_CHIP_ID_MASK			0x00000007
 
 #define SOLO_PLL_CONFIG				0x0020 /* 6110 Only */
 
+
+/*
+ * EEPROM Access
+ */
 #define SOLO_EEPROM_CTRL			0x0060
 #define	  SOLO_EEPROM_ACCESS_EN			(1<<7)
 #define	  SOLO_EEPROM_CS			(1<<3)
@@ -99,6 +115,10 @@
 #define	  SOLO_EEPROM_DI			(1<<0)
 #define	  SOLO_EEPROM_ENABLE (SOLO_EEPROM_ACCESS_EN | SOLO_EEPROM_CS)
 
+
+/*
+ * PCI Error
+ */
 #define SOLO_PCI_ERR				0x0070
 #define   SOLO_PCI_ERR_FATAL			0x00000001
 #define   SOLO_PCI_ERR_PARITY			0x00000002
@@ -160,6 +180,10 @@
 
 #define SOLO_P2M_BUFFER(i)			(0x2000 + ((i)*4))
 
+
+/*
+ * Video Input
+ */
 #define SOLO_VI_CH_SWITCH_0			0x0100
 #define SOLO_VI_CH_SWITCH_1			0x0104
 #define SOLO_VI_CH_SWITCH_2			0x0108
@@ -231,6 +255,7 @@
 
 #define	SOLO_VI_WIN_ON(ch)			(0x0200 + ((ch)*4))
 
+/* Live On Delay (Frame Interval) */
 #define SOLO_VI_WIN_SW				0x0240
 #define SOLO_VI_WIN_LIVE_AUTO_MUTE		0x0244
 
@@ -257,6 +282,9 @@
 #define	  SOLO_VI_MOTION_CB_VALUE(v)		((v)<<8)
 #define	  SOLO_VI_MOTION_CR_VALUE(v)		((v)<<0)
 
+/*
+ * Video Output
+ */
 #define	SOLO_VO_FMT_ENC				0x0300
 #define	  SOLO_VO_SCAN_MODE_PROGRESSIVE		(1<<31)
 #define	  SOLO_VO_FMT_TYPE_PAL			(1<<30)
@@ -631,9 +659,15 @@
 #define SOLO_AUDIO_STA				0x0D14
 
 /*
- * Watchdog configuration
+ * Watchdog
  */
 #define SOLO_WATCHDOG				0x0be4
-#define SOLO_WATCHDOG_SET(status, sec)		(status << 8 | (sec & 0xff))
+#define SOLO_WATCHDOG_SET(status, sec)		((status << 8) | (sec & 0xff))
+
+
+/*
+ * Undocumented stuff
+ */
+#define SOLO_DMA_CTRL1				0x0008
 
 #endif /* __SOLO6010_REGISTERS_H */
