@@ -199,13 +199,13 @@
 
 #define	SOLO_VI_CH_ENA				0x010C
 #define	SOLO_VI_CH_FORMAT			0x0110
-#define	  SOLO_VI_FD_SEL_MASK(n)		((n)<<16)
-#define	  SOLO_VI_PROG_MASK(n)			((n)<<0)
+#define	  SOLO_VI_FD_SEL_MASK(n)		((n) << 16)
+#define	  SOLO_VI_PROG_MASK(n)			((n) & 0xffff)
 
 #define SOLO_VI_FMT_CFG				0x0114
-#define	  SOLO_VI_FMT_CHECK_VCOUNT		(1<<31)
-#define	  SOLO_VI_FMT_CHECK_HCOUNT		(1<<30)
-#define   SOLO_VI_FMT_TEST_SIGNAL		(1<<28)
+#define	  SOLO_VI_FMT_CHECK_VCOUNT		(1 << 31)
+#define	  SOLO_VI_FMT_CHECK_HCOUNT		(1 << 30)
+#define   SOLO_VI_FMT_TEST_SIGNAL		(1 << 28)
 
 #define	SOLO_VI_PAGE_SW				0x0118
 #define	  SOLO_FI_INV_DISP_LIVE(n)		((n)<<8)
