@@ -424,18 +424,20 @@
 
 #define SOLO_VE_CFG0				0x0610
 #define	  SOLO_VE_TWO_PAGE_MODE			(1 << 31)
-#define	  SOLO_VE_INTR_CTRL(n)			((n)<<24)
-#define	  SOLO_VE_BLOCK_SIZE(n)			((n)<<16)
-#define	  SOLO_VE_BLOCK_BASE(n)			((n)<<0)
+#define	  SOLO_VE_INTR_CTRL(n)			(((n) & 0x3f) << 24)
+#define	  SOLO_VE_BLOCK_SIZE(n)			(((n) & 0xff) << 16)
+#define	  SOLO_VE_BLOCK_BASE(n)			((n) & 0xffff)
 
 #define SOLO_VE_CFG1				0x0614
-#define	  SOLO_VE_BYTE_ALIGN(n)			((n)<<24)
-#define	  SOLO_VE_INSERT_INDEX			(1<<18)
-#define	  SOLO_VE_MOTION_MODE(n)		((n)<<16)
-#define	  SOLO_VE_MOTION_BASE(n)		((n)<<0)
-#define   SOLO_VE_MPEG_SIZE_H(n)		((n)<<28) /* 6110 Only */
-#define   SOLO_VE_JPEG_SIZE_H(n)		((n)<<20) /* 6110 Only */
-#define   SOLO_VE_INSERT_INDEX_JPEG		(1<<19)   /* 6110 Only */
+/* XXX: 6110 Only: [31:28], [23:19] */
+#define   SOLO_VE_MPEG_SIZE_H(n)		(((n) & 0xf) << 28)
+#define   SOLO_VE_JPEG_SIZE_H(n)		(((n) & 0xf) << 20)
+#define   SOLO_VE_INSERT_INDEX_JPEG		(1 << 19)
+/* XXX: [27:24] is undocumented!, byte alignment? */
+#define	  SOLO_VE_BYTE_ALIGN(n)			(((n) & 0xf) << 24)
+#define	  SOLO_VE_INSERT_INDEX			(1 << 18)
+#define	  SOLO_VE_MOTION_MODE(n)		(((n) & 3) << 16)
+#define	  SOLO_VE_MOTION_BASE(n)		((n) & 0xffff)
 
 #define SOLO_VE_WMRK_POLY			0x061C
 #define SOLO_VE_VMRK_INIT_KEY			0x0620
