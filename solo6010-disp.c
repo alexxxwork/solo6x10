@@ -151,7 +151,7 @@ static void solo_vout_config(struct solo6010_dev *solo_dev)
 	solo_reg_write(solo_dev, SOLO_VO_BKG_COLOR,
 		       (16 << 24) | (128 << 16) | (16 << 8) | 128);
 
-	solo_reg_write(solo_dev, SOLO_VO_DISP_ERASE, SOLO_VO_DISP_ERASE_ON);
+	solo_reg_write(solo_dev, SOLO_VO_DISP_ERASE, 1);
 
 	solo_reg_write(solo_dev, SOLO_VI_WIN_SW, 0);
 

@@ -57,7 +57,7 @@ struct solo_filehandle {
 
 static inline void erase_on(struct solo6010_dev *solo_dev)
 {
-	solo_reg_write(solo_dev, SOLO_VO_DISP_ERASE, SOLO_VO_DISP_ERASE_ON);
+	solo_reg_write(solo_dev, SOLO_VO_DISP_ERASE, 1);
 	solo_dev->erasing = 1;
 	solo_dev->frame_blank = 0;
 }

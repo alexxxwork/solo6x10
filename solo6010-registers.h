@@ -332,8 +332,8 @@
 #define	  SOLO_VO_DISP_DOUBLE_SCAN		(1 << 22)
 #define	  SOLO_VO_DISP_SINGLE_PAGE		(1 << 21)
 
+/* Display Erase: 1:On, 0:Off */
 #define SOLO_VO_DISP_ERASE			0x0314
-#define	  SOLO_VO_DISP_ERASE_ON			(1<<0)
 
 #define	SOLO_VO_ZOOM_CTRL			0x0318
 #define	  SOLO_VO_ZOOM_VER_ON			(1 << 24)
