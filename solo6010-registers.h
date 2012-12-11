@@ -287,9 +287,8 @@
 #define	  SOLO_VI_MOTION_CB_ADD			(1 << 26)
 #define	  SOLO_VI_MOTION_CR_SET			(1 << 25)
 #define	  SOLO_VI_MOTION_CR_ADD			(1 << 24)
-#define	  SOLO_VI_MOTION_Y_VALUE(v)		((v)<<16)
-#define	  SOLO_VI_MOTION_CB_VALUE(v)		((v)<<8)
-#define	  SOLO_VI_MOTION_CR_VALUE(v)		((v)<<0)
+#define	  SOLO_VI_MOTION_COLOR(y, cb, cr)	\
+	((((y) << 16) | ((cb) << 8) | (cr)) & 0xffffff)
 
 /*
  * Video Output

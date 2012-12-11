@@ -761,15 +761,11 @@ static int solo_disp_s_ctrl(struct file *file, void *priv,
 	case V4L2_CID_MOTION_TRACE:
 		if (ctrl->value) {
 			solo_reg_write(solo_dev, SOLO_VI_MOTION_BORDER,
-					SOLO_VI_MOTION_Y_ADD |
-					SOLO_VI_MOTION_Y_VALUE(0x20) |
-					SOLO_VI_MOTION_CB_VALUE(0x10) |
-					SOLO_VI_MOTION_CR_VALUE(0x10));
+				       SOLO_VI_MOTION_Y_ADD |
+				       SOLO_VI_MOTION_COLOR(0x20, 0x10, 0x10));
 			solo_reg_write(solo_dev, SOLO_VI_MOTION_BAR,
-					SOLO_VI_MOTION_CR_ADD |
-					SOLO_VI_MOTION_Y_VALUE(0x10) |
-					SOLO_VI_MOTION_CB_VALUE(0x80) |
-					SOLO_VI_MOTION_CR_VALUE(0x10));
+				       SOLO_VI_MOTION_CR_ADD |
+				       SOLO_VI_MOTION_COLOR(0x10, 0x80, 0x10));
 		} else {
 			solo_reg_write(solo_dev, SOLO_VI_MOTION_BORDER, 0);
 			solo_reg_write(solo_dev, SOLO_VI_MOTION_BAR, 0);
