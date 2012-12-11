@@ -303,9 +303,8 @@
 #define	  SOLO_VO_USER_COLOR_SET_HSYNC		(1 << 18)
 #define	  SOLO_VO_USER_COLOR_SET_NAH		(1 << 17) /* Non Active of H. */
 #define	  SOLO_VO_USER_COLOR_SET_NAV		(1 << 16) /* Non Active of V. */
-#define	  SOLO_VO_NA_COLOR_Y(Y)			((Y)<<8)
-#define	  SOLO_VO_NA_COLOR_CB(CB)		(((CB)/16)<<4)
-#define	  SOLO_VO_NA_COLOR_CR(CR)		(((CR)/16)<<0)
+#define	  SOLO_VO_NA_COLOR(y, cb, cr)		\
+	  ((((y) << 8) | ((cb) & ~0xf) | ((cr) >> 4)) & 0xffff)
 
 #define	SOLO_VO_ACT_H				0x0304
 #define	  SOLO_VO_H_BLANK(n)			((n)<<22)

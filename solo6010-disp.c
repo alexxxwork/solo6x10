@@ -125,9 +125,7 @@ static void solo_vout_config(struct solo6010_dev *solo_dev)
 		       solo_dev->video_type |
 		       SOLO_VO_USER_COLOR_SET_NAV |
 		       SOLO_VO_USER_COLOR_SET_NAH |
-		       SOLO_VO_NA_COLOR_Y(0) |
-		       SOLO_VO_NA_COLOR_CB(0) |
-		       SOLO_VO_NA_COLOR_CR(0));
+		       SOLO_VO_NA_COLOR(0, 0, 0));
 
 	solo_reg_write(solo_dev, SOLO_VO_ACT_H,
 		       SOLO_VO_H_START(solo_dev->vout_hstart) |
