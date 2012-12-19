@@ -207,20 +207,23 @@
 #define	  SOLO_VI_FMT_CHECK_HCOUNT		(1 << 30)
 #define   SOLO_VI_FMT_TEST_SIGNAL		(1 << 28)
 
-#define	SOLO_VI_PAGE_SW				0x0118
-#define	  SOLO_FI_INV_DISP_LIVE(n)		((n)<<8)
-#define	  SOLO_FI_INV_DISP_OUT(n)		((n)<<7)
-#define	  SOLO_DISP_SYNC_FI(n)			((n)<<6)
-#define	  SOLO_PIP_PAGE_ADD(n)			((n)<<3)
-#define	  SOLO_NORMAL_PAGE_ADD(n)		((n)<<0)
+#define	SOLO_VI_PAGE_SWITCH			0x0118
+/* XXX: Following four fields are undocumented and unused */
+#define	  SOLO_FI_INV_DISP_LIVE(n)		(((n) & 1) << 8)
+#define	  SOLO_FI_INV_DISP_OUT(n)		(((n) & 1) << 7)
+#define	  SOLO_DISP_SYNC_FI(n)			(((n) & 1) << 6)
+#define	  SOLO_PIP_PAGE_ADD(n)			(((n) & 3) << 3)
+/* Writing page distance. Four frame buffers are used to display video output.
+ * For avoiding the frame overlapping. */
+#define	  SOLO_NORMAL_PAGE_ADD(n)		((n) & 3)
 
-#define	SOLO_VI_ACT_I_P				0x011C
-#define	SOLO_VI_ACT_I_S				0x0120
-#define	SOLO_VI_ACT_P				0x0124
+#define	SOLO_VI_ACT_INTERLACED_PRIMARY		0x011C
+#define	SOLO_VI_ACT_INTERLACED_SECONDARY	0x0120
+#define	SOLO_VI_ACT_PROGRESSIVE			0x0124
 #define	  SOLO_VI_FI_INVERT			(1 << 31)
-#define	  SOLO_VI_H_START(n)			((n)<<21)
-#define	  SOLO_VI_V_START(n)			((n)<<11)
-#define	  SOLO_VI_V_STOP(n)			((n)<<0)
+#define	  SOLO_VI_H_START(n)			(((n) & 0x1ff) << 21)
+#define	  SOLO_VI_V_START(n)			(((n) & 0x3ff) << 11)
+#define	  SOLO_VI_V_STOP(n)			((n) & 0x7ff)
 
 #define SOLO_VI_STATUS0				0x0128
 #define   SOLO_VI_STATUS0_PAGE(n)		((n) & 0x07)

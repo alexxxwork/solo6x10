@@ -52,19 +52,19 @@ static void solo_vin_config(struct solo6010_dev *solo_dev)
 		       SOLO_VCLK_SELECT(2) |
 		       SOLO_VCLK_VIN_ALL_DELAY(SOLO_VCLK_DELAY));
 
-	solo_reg_write(solo_dev, SOLO_VI_ACT_I_P,
+	solo_reg_write(solo_dev, SOLO_VI_ACT_INTERLACED_PRIMARY,
 		       SOLO_VI_H_START(solo_dev->vin_hstart) |
 		       SOLO_VI_V_START(solo_dev->vin_vstart) |
 		       SOLO_VI_V_STOP(solo_dev->vin_vstart +
 				      solo_dev->video_vsize));
 
-	solo_reg_write(solo_dev, SOLO_VI_ACT_I_S,
+	solo_reg_write(solo_dev, SOLO_VI_ACT_INTERLACED_SECONDARY,
 		       SOLO_VI_H_START(solo_dev->vout_hstart) |
 		       SOLO_VI_V_START(solo_dev->vout_vstart) |
 		       SOLO_VI_V_STOP(solo_dev->vout_vstart +
 				      solo_dev->video_vsize));
 
-	solo_reg_write(solo_dev, SOLO_VI_ACT_P,
+	solo_reg_write(solo_dev, SOLO_VI_ACT_PROGRESSIVE,
 		       SOLO_VI_H_START(0) |
 		       SOLO_VI_V_START(1) |
 		       SOLO_VI_V_STOP(SOLO_PROGRESSIVE_VSIZE));
@@ -78,7 +78,8 @@ static void solo_vin_config(struct solo6010_dev *solo_dev)
 	else
 		solo_reg_write(solo_dev, SOLO_VI_FMT_CFG, 16 << 22);
 
-	solo_reg_write(solo_dev, SOLO_VI_PAGE_SW, 2);
+	/* Set up writing page distance */
+	solo_reg_write(solo_dev, SOLO_VI_PAGE_SWITCH, SOLO_NORMAL_PAGE_ADD(2));
 
 	if (solo_dev->video_type == SOLO_VO_FMT_TYPE_NTSC) {
 		solo_reg_write(solo_dev, SOLO_VI_PB_CONFIG,
