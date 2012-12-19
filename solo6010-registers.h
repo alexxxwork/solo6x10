@@ -372,9 +372,9 @@
 #define SOLO_VO_CELL_EXT_START2			0x0378
 #define SOLO_VO_CELL_EXT_STOP2			0x037c
 
-#define SOLO_VO_RECTANGLE_CTRL(n)		(0x0368+((n)*12))
-#define SOLO_VO_RECTANGLE_START(n)		(0x036c+((n)*12))
-#define SOLO_VO_RECTANGLE_STOP(n)		(0x0370+((n)*12))
+#define SOLO_VO_RECTANGLE_CTRL(n)		(0x0368 + (((n) & 1) * 12))
+#define SOLO_VO_RECTANGLE_START(n)		(0x036c + (((n) & 1) * 12))
+#define SOLO_VO_RECTANGLE_STOP(n)		(0x0370 + (((n) & 1) * 12))
 
 #define SOLO_VO_CURSOR_POS			(0x0380)
 #define SOLO_VO_CURSOR_CLR			(0x0384)
