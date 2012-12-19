@@ -156,7 +156,7 @@
 /* In solo6110, the following register range is used for endianness
  * selection (which we don't use). */
 #define SOLO_P2M_DESC_ID(n)			(0x0088 + (((n) & 3) << 5))
-#define	  SOLO_P2M_UPDATE_ID(n)			(n)
+#define	  SOLO_P2M_UPDATE_ID(n)			((n) & 0xff)
 
 #define SOLO_P2M_STATUS(n)			(0x008C + (((n) & 3) << 5))
 #define	  SOLO_P2M_COMMAND_DONE			(1 << 8)
