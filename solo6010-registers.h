@@ -353,8 +353,8 @@
 #define	  SOLO_BG_V(v)				((v)<<0)
 
 #define	SOLO_VO_DEINTERLACE			0x0324
-#define	  SOLO_VO_DEINTERLACE_THRESHOLD(n)	((n)<<8)
-#define	  SOLO_VO_DEINTERLACE_EDGE_VALUE(n)	((n)<<0)
+#define	  SOLO_VO_DEINTERLACE_THRESHOLD(n)	(((n) & 0xfff) << 8)
+#define	  SOLO_VO_DEINTERLACE_EDGE_VALUE(n)	((n) & 0xff)
 
 #define SOLO_VO_BORDER_LINE_COLOR		0x0330
 #define SOLO_VO_BORDER_FILL_COLOR		0x0334
