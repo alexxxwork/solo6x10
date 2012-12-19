@@ -349,9 +349,8 @@
 #define	  SOLO_VO_FREEZE_INTERPOLATION		(1 << 0)
 
 #define	SOLO_VO_BKG_COLOR			0x0320
-#define	  SOLO_BG_Y(y)				((y)<<16)
-#define	  SOLO_BG_U(u)				((u)<<8)
-#define	  SOLO_BG_V(v)				((v)<<0)
+#define	  SOLO_BG_COLOR(y, u, v)		\
+	((((y) << 16) | ((u) << 8) | (v)) & 0xffffff)
 
 #define	SOLO_VO_DEINTERLACE			0x0324
 #define	  SOLO_VO_DEINTERLACE_THRESHOLD(n)	(((n) & 0xfff) << 8)
