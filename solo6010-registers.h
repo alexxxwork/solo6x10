@@ -413,10 +413,10 @@
 #define SOLO_DIM_PROG				0x041C
 #define SOLO_CAP_STATUS				0x0420
 
-#define SOLO_CAP_CH_SCALE(ch)			(0x0440+((ch)*4))
-#define SOLO_CAP_CH_COMP_ENA_E(ch)		(0x0480+((ch)*4))
-#define SOLO_CAP_CH_INTV(ch)			(0x04C0+((ch)*4))
-#define SOLO_CAP_CH_INTV_E(ch)			(0x0500+((ch)*4))
+#define SOLO_CAP_CH_SCALE(ch)			(0x0440 + (((ch) & 15) << 2))
+#define SOLO_CAP_CH_COMP_ENA_E(ch)		(0x0480 + (((ch) & 15) << 2))
+#define SOLO_CAP_CH_INTV(ch)			(0x04C0 + (((ch) & 15) << 2))
+#define SOLO_CAP_CH_INTV_E(ch)			(0x0500 + (((ch) & 15) << 2))
 
 
 #define SOLO_VE_CFG0				0x0610
