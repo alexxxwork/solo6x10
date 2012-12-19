@@ -620,13 +620,13 @@
 #define	  SOLO_UART_PARITY_EVEN			2
 #define	  SOLO_UART_PARITY_ODD			3
 
-#define SOLO_UART_STATUS(n)			(0x0BA4 + ((n)*0x20))
-#define	  SOLO_UART_CTS				(1<<15)
-#define	  SOLO_UART_RX_BUSY			(1<<14)
-#define	  SOLO_UART_OVERRUN			(1<<13)
-#define	  SOLO_UART_FRAME_ERR			(1<<12)
-#define	  SOLO_UART_PARITY_ERR			(1<<11)
-#define	  SOLO_UART_TX_BUSY			(1<<5)
+#define SOLO_UART_STATUS(n)			(0x0BA4 + (((n) & 1) << 5))
+#define	  SOLO_UART_CTS				(1 << 15)
+#define	  SOLO_UART_RX_BUSY			(1 << 14)
+#define	  SOLO_UART_OVERRUN			(1 << 13)
+#define	  SOLO_UART_FRAME_ERR			(1 << 12)
+#define	  SOLO_UART_PARITY_ERR			(1 << 11)
+#define	  SOLO_UART_TX_BUSY			(1 << 5)
 
 #define	  SOLO_UART_RX_BUFF_CNT(stat)		(((stat)>>6) & 0x1f)
 #define	  SOLO_UART_RX_BUFF_SIZE		8
