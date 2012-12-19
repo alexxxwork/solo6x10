@@ -386,9 +386,9 @@
 #define	SOLO_OSG_CONFIG				0x03E0
 #define	  SOLO_VO_OSG_ON			(1 << 31)
 #define	  SOLO_VO_OSG_COLOR_MUTE		(1 << 28)
-#define	  SOLO_VO_OSG_ALPHA_RATE(n)		((n)<<22)
-#define	  SOLO_VO_OSG_ALPHA_BG_RATE(n)		((n)<<16)
-#define	  SOLO_VO_OSG_BASE(offset)		(((offset)>>16)&0xffff)
+#define	  SOLO_VO_OSG_ALPHA_RATE(n)		(((n) & 0x3f) << 22)
+#define	  SOLO_VO_OSG_ALPHA_BG_RATE(n)		(((n) & 0x3f) << 16)
+#define	  SOLO_VO_OSG_BASE(offset)		(((offset) >> 16) & 0xffff)
 
 #define SOLO_OSG_ERASE				0x03E4
 #define	  SOLO_OSG_ERASE_ON			(1 << 7)
