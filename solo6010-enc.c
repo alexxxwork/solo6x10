@@ -60,7 +60,7 @@ static void solo_capture_config(struct solo6010_dev *solo_dev)
 	/* Set scale 1, 9 dimension */
 	width = solo_dev->video_hsize;
 	height = solo_dev->video_vsize;
-	solo_reg_write(solo_dev, SOLO_DIM_SCALE1,
+	solo_reg_write(solo_dev, SOLO_DIM_SCALE(1),
 		       SOLO_DIM_H_MB_NUM(width / 16) |
 		       SOLO_DIM_V_MB_NUM_FRAME(height / 8) |
 		       SOLO_DIM_V_MB_NUM_FIELD(height / 16));
@@ -68,7 +68,7 @@ static void solo_capture_config(struct solo6010_dev *solo_dev)
 	/* Set scale 2, 10 dimension */
 	width = solo_dev->video_hsize / 2;
 	height = solo_dev->video_vsize;
-	solo_reg_write(solo_dev, SOLO_DIM_SCALE2,
+	solo_reg_write(solo_dev, SOLO_DIM_SCALE(2),
 		       SOLO_DIM_H_MB_NUM(width / 16) |
 		       SOLO_DIM_V_MB_NUM_FRAME(height / 8) |
 		       SOLO_DIM_V_MB_NUM_FIELD(height / 16));
@@ -76,7 +76,7 @@ static void solo_capture_config(struct solo6010_dev *solo_dev)
 	/* Set scale 3, 11 dimension */
 	width = solo_dev->video_hsize / 2;
 	height = solo_dev->video_vsize / 2;
-	solo_reg_write(solo_dev, SOLO_DIM_SCALE3,
+	solo_reg_write(solo_dev, SOLO_DIM_SCALE(3),
 		       SOLO_DIM_H_MB_NUM(width / 16) |
 		       SOLO_DIM_V_MB_NUM_FRAME(height / 8) |
 		       SOLO_DIM_V_MB_NUM_FIELD(height / 16));
@@ -84,7 +84,7 @@ static void solo_capture_config(struct solo6010_dev *solo_dev)
 	/* Set scale 4, 12 dimension */
 	width = solo_dev->video_hsize / 3;
 	height = solo_dev->video_vsize / 3;
-	solo_reg_write(solo_dev, SOLO_DIM_SCALE4,
+	solo_reg_write(solo_dev, SOLO_DIM_SCALE(4),
 		       SOLO_DIM_H_MB_NUM(width / 16) |
 		       SOLO_DIM_V_MB_NUM_FRAME(height / 8) |
 		       SOLO_DIM_V_MB_NUM_FIELD(height / 16));
@@ -92,7 +92,7 @@ static void solo_capture_config(struct solo6010_dev *solo_dev)
 	/* Set scale 5, 13 dimension */
 	width = solo_dev->video_hsize / 4;
 	height = solo_dev->video_vsize / 2;
-	solo_reg_write(solo_dev, SOLO_DIM_SCALE5,
+	solo_reg_write(solo_dev, SOLO_DIM_SCALE(5),
 		       SOLO_DIM_H_MB_NUM(width / 16) |
 		       SOLO_DIM_V_MB_NUM_FRAME(height / 8) |
 		       SOLO_DIM_V_MB_NUM_FIELD(height / 16));
@@ -109,8 +109,7 @@ static void solo_capture_config(struct solo6010_dev *solo_dev)
 	solo_reg_write(solo_dev, SOLO_VE_OSD_CH, 0);
 	solo_reg_write(solo_dev, SOLO_VE_OSD_BASE,
 		       SOLO_EOSD_EXT_ADDR(solo_dev) >> 16);
-	solo_reg_write(solo_dev, SOLO_VE_OSD_CLR,
-		       0xF0 << 16 | 0x80 << 8 | 0x80);
+	solo_reg_write(solo_dev, SOLO_VE_OSD_CLR, 0xF08080);
 
 	if (solo_dev->type == SOLO_DEV_6010)
 		solo_reg_write(solo_dev, SOLO_VE_OSD_OPT,

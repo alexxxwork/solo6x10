@@ -405,14 +405,10 @@
 #define	  SOLO_CAP_PROG_BANDWIDTH(n)		(((n) & 0x3f) << 8)
 #define	  SOLO_CAP_MAX_BANDWIDTH(n)		((n) & 0xff)
 
-#define SOLO_DIM_SCALE1				0x0408
-#define SOLO_DIM_SCALE2				0x040C
-#define SOLO_DIM_SCALE3				0x0410
-#define SOLO_DIM_SCALE4				0x0414
-#define SOLO_DIM_SCALE5				0x0418
-#define	  SOLO_DIM_V_MB_NUM_FRAME(n)		((n)<<16)
-#define	  SOLO_DIM_V_MB_NUM_FIELD(n)		((n)<<8)
-#define	  SOLO_DIM_H_MB_NUM(n)			((n)<<0)
+#define SOLO_DIM_SCALE(n)			(0x0408 + ((((n) - 1) % 5) << 2))
+#define	  SOLO_DIM_V_MB_NUM_FRAME(n)		(((n) & 0xff) << 16)
+#define	  SOLO_DIM_V_MB_NUM_FIELD(n)		(((n) & 0xff) << 8)
+#define	  SOLO_DIM_H_MB_NUM(n)			((n) & 0xff)
 
 #define SOLO_DIM_PROG				0x041C
 #define SOLO_CAP_STATUS				0x0420
