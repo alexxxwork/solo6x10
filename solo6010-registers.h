@@ -381,7 +381,7 @@
 #define SOLO_VO_CURSOR_CLR2			(0x0388)
 #define SOLO_VO_CURSOR_MASK(id)			(0x0390+((id)*4))
 
-#define SOLO_VO_EXPANSION(id)			(0x0250+((id)*4))
+#define SOLO_VO_EXPANSION(id)			(0x0250 + (((id) % 20) << 2))
 
 #define	SOLO_OSG_CONFIG				0x03E0
 #define	  SOLO_VO_OSG_ON			(1 << 31)
