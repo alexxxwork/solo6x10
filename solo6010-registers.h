@@ -232,18 +232,19 @@
 /* XXX: Might be better off in kernel level disp.h */
 #define DISP_PAGE(stat)				((stat) & 0x07)
 
+/* Mosaic for private area */
 #define SOLO_VI_PB_CONFIG			0x0130
 #define	  SOLO_VI_PB_USER_MODE			2
 #define	  SOLO_VI_PB_PAL			1
 #define SOLO_VI_PB_RANGE_HV			0x0134
-#define	  SOLO_VI_PB_HSIZE(h)			((h)<<12)
-#define	  SOLO_VI_PB_VSIZE(v)			((v)<<0)
+#define	  SOLO_VI_PB_HSIZE(n)			(((n) & 0x3ff) << 12)
+#define	  SOLO_VI_PB_VSIZE(n)			((n) & 0x7ff)
 #define SOLO_VI_PB_ACT_H			0x0138
-#define	  SOLO_VI_PB_HSTART(n)			((n)<<12)
-#define	  SOLO_VI_PB_HSTOP(n)			((n)<<0)
+#define	  SOLO_VI_PB_HSTART(n)			(((n) & 0x3ff) << 12)
+#define	  SOLO_VI_PB_HSTOP(n)			((n) & 0x7ff)
 #define SOLO_VI_PB_ACT_V			0x013C
-#define	  SOLO_VI_PB_VSTART(n)			((n)<<12)
-#define	  SOLO_VI_PB_VSTOP(n)			((n)<<0)
+#define	  SOLO_VI_PB_VSTART(n)			(((n) & 0x3ff) << 12)
+#define	  SOLO_VI_PB_VSTOP(n)			((n) & 0x7ff)
 
 #define	SOLO_VI_MOSAIC(ch)			(0x0140 + ((ch)*4))
 #define	  SOLO_VI_MOSAIC_SX(x)			((x)<<24)
