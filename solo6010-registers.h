@@ -275,11 +275,11 @@
 #define	SOLO_VI_MOT_ADR				0x0260
 #define	  SOLO_VI_MOTION_ENABLE(mask)		((mask) << 16)
 #define	SOLO_VI_MOT_CTRL			0x0264
-#define	  SOLO_VI_MOTION_FRAME_COUNT(n)		((n)<<24)
-#define	  SOLO_VI_MOTION_SAMPLE_LENGTH(n)	((n)<<16)
-#define	  SOLO_VI_MOTION_SAMPLE_COUNT(n)	((n)<<0)
+#define	  SOLO_VI_MOTION_FRAME_COUNT(n)		((n) << 24)
+#define	  SOLO_VI_MOTION_SAMPLE_LENGTH(n)	(((n) & 0x3f) << 16)
 #define	  SOLO_VI_MOTION_INTR_START_STOP	(1 << 15)
 #define	  SOLO_VI_MOTION_FREEZE_DATA		(1 << 14)
+#define	  SOLO_VI_MOTION_SAMPLE_COUNT(n)	((n) & 0x3fff)
 #define SOLO_VI_MOT_CLEAR			0x0268
 #define SOLO_VI_MOT_STATUS			0x026C
 #define	  SOLO_VI_MOTION_CNT(n)			((n)<<0)
