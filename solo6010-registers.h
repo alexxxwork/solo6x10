@@ -268,7 +268,7 @@
 #define	SOLO_VI_WIN_ON(ch)			(0x0200 + ((ch)*4))
 
 /* Live On Delay (Frame Interval) */
-#define SOLO_VI_WIN_SW				0x0240
+#define SOLO_VI_WIN_SWITCH			0x0240
 #define SOLO_VI_WIN_LIVE_AUTO_MUTE		0x0244
 
 #define	SOLO_VI_MOT_ADR				0x0260
