@@ -524,31 +524,33 @@
 
 #define SOLO_VD_IDX0				0x0930
 #define	  SOLO_VD_IDX_INTERLACE			(1 << 30)
-#define	  SOLO_VD_IDX_CHANNEL(n)		((n)<<24)
-#define	  SOLO_VD_IDX_SIZE(n)			((n)<<0)
+#define	  SOLO_VD_IDX_CHANNEL(n)		(((n) & 0xf) << 24)
+#define	  SOLO_VD_IDX_SIZE(n)			((n) & 0xfffff)
 
 #define SOLO_VD_IDX1				0x0934
-#define	  SOLO_VD_IDX_SRC_SCALE(n)		((n)<<28)
-#define	  SOLO_VD_IDX_WINDOW(n)			((n)<<24)
-#define	  SOLO_VD_IDX_H_BLOCK(n)		((n)<<8)
-#define	  SOLO_VD_IDX_V_BLOCK(n)		((n)<<0)
+#define	  SOLO_VD_IDX_SRC_SCALE(n)		((n) << 28)
+#define	  SOLO_VD_IDX_WINDOW(n)			(((n) & 0xf) << 24)
 #define	  SOLO_VD_IDX_DEINTERLACE		(1 << 16)
+#define	  SOLO_VD_IDX_H_BLOCK(n)		(((n) & 0xff) << 8)
+#define	  SOLO_VD_IDX_V_BLOCK(n)		((n) & 0xff)
 
 #define SOLO_VD_IDX2				0x0938
 #define	  SOLO_VD_IDX_REF_BASE_SIDE		(1 << 31)
 #define	  SOLO_VD_IDX_REF_BASE(n)		(((n) >> 16) & 0xffff)
 
 #define SOLO_VD_IDX3				0x093C
-#define	  SOLO_VD_IDX_DISP_SCALE(n)		((n)<<28)
-#define	  SOLO_VD_IDX_OFFSET_X(n)		((n)<<12)
-#define	  SOLO_VD_IDX_OFFSET_Y(n)		((n)<<0)
+#define	  SOLO_VD_IDX_DISP_SCALE(n)		((n) << 28)
 #define	  SOLO_VD_IDX_INTERLACE_WR		(1 << 27)
 #define	  SOLO_VD_IDX_INTERPOL			(1 << 26)
 #define	  SOLO_VD_IDX_HOR2X			(1 << 25)
+#define	  SOLO_VD_IDX_OFFSET_X(n)		(((n) & 0xfff) << 12)
+#define	  SOLO_VD_IDX_OFFSET_Y(n)		((n) & 0xfff)
 
 #define SOLO_VD_IDX4				0x0940
-#define	  SOLO_VD_IDX_DEC_WR_PAGE(n)		((n)<<8)
-#define	  SOLO_VD_IDX_DISP_RD_PAGE(n)		((n)<<0)
+#define	  SOLO_VD_IDX_DEC_WR_PAGE(n)		(((n) & 0xff) << 8)
+#define	  SOLO_VD_IDX_DISP_RD_PAGE(n)		((n) & 0xff)
+
+#define SOLO_VD_IDX5				0x0944
 
 #define SOLO_VD_WR_PAGE(n)			(0x03F0 + ((n) * 4))
 
