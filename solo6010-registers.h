@@ -328,10 +328,10 @@
 
 #define	SOLO_VO_DISP_CTRL			0x0310
 #define	  SOLO_VO_DISP_ON			(1 << 31)
-#define	  SOLO_VO_DISP_ERASE_COUNT(n)		((n&0xf)<<24)
-#define	  SOLO_VO_DISP_BASE(n)			(((n)>>16) & 0xffff)
+#define	  SOLO_VO_DISP_ERASE_COUNT(n)		(((n) & 0xf) << 24)
 #define	  SOLO_VO_DISP_DOUBLE_SCAN		(1 << 22)
 #define	  SOLO_VO_DISP_SINGLE_PAGE		(1 << 21)
+#define	  SOLO_VO_DISP_BASE(n)			(((n) >> 16) & 0xffff)
 
 /* Display Erase: 1:On, 0:Off */
 #define SOLO_VO_DISP_ERASE			0x0314
