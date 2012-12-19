@@ -376,10 +376,10 @@
 #define SOLO_VO_RECTANGLE_START(n)		(0x036c + (((n) & 1) * 12))
 #define SOLO_VO_RECTANGLE_STOP(n)		(0x0370 + (((n) & 1) * 12))
 
-#define SOLO_VO_CURSOR_POS			(0x0380)
-#define SOLO_VO_CURSOR_CLR			(0x0384)
-#define SOLO_VO_CURSOR_CLR2			(0x0388)
-#define SOLO_VO_CURSOR_MASK(id)			(0x0390+((id)*4))
+#define SOLO_VO_CURSOR_POS			0x0380
+#define SOLO_VO_CURSOR_CLR			0x0384
+#define SOLO_VO_CURSOR_CLR2			0x0388
+#define SOLO_VO_CURSOR_MASK(id)			(0x0390 + (((id) % 20) << 2))
 
 #define SOLO_VO_EXPANSION(id)			(0x0250 + (((id) % 20) << 2))
 
