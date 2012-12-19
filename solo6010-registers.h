@@ -266,7 +266,7 @@
 #define	  SOLO_VI_WIN_SY(x)			(((x) & 0xfff) << 12)
 #define	  SOLO_VI_WIN_EY(x)			((x) & 0xfff)
 
-#define	SOLO_VI_WIN_ON(ch)			(0x0200 + ((ch)*4))
+#define	SOLO_VI_WIN_ON(ch)			(0x0200 + (((ch) & 15) << 2))
 
 /* Live On Delay (Frame Interval) */
 #define SOLO_VI_WIN_SWITCH			0x0240
