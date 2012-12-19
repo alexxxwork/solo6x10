@@ -311,21 +311,21 @@
 	  ((((y) << 8) | ((cb) & ~0xf) | ((cr) >> 4)) & 0xffff)
 
 #define	SOLO_VO_ACT_H				0x0304
-#define	  SOLO_VO_H_BLANK(n)			((n)<<22)
-#define	  SOLO_VO_H_START(n)			((n)<<11)
-#define	  SOLO_VO_H_STOP(n)			((n)<<0)
+#define	  SOLO_VO_H_BLANK(n)			((n) << 22)
+#define	  SOLO_VO_H_START(n)			(((n) & 0x7ff) << 11)
+#define	  SOLO_VO_H_STOP(n)			((n) & 0x7ff)
 
 #define	SOLO_VO_ACT_V				0x0308
-#define	  SOLO_VO_V_BLANK(n)			((n)<<22)
-#define	  SOLO_VO_V_START(n)			((n)<<11)
-#define	  SOLO_VO_V_STOP(n)			((n)<<0)
+#define	  SOLO_VO_V_BLANK(n)			((n) << 22)
+#define	  SOLO_VO_V_START(n)			(((n) & 0x7ff) << 11)
+#define	  SOLO_VO_V_STOP(n)			((n) & 0x7ff)
 
 #define	SOLO_VO_RANGE_HV			0x030C
 #define	  SOLO_VO_SYNC_INVERT			(1 << 24)
 #define	  SOLO_VO_HSYNC_INVERT			(1 << 23)
 #define	  SOLO_VO_VSYNC_INVERT			(1 << 22)
-#define	  SOLO_VO_H_LEN(n)			((n)<<11)
-#define	  SOLO_VO_V_LEN(n)			((n)<<0)
+#define	  SOLO_VO_H_LEN(n)			(((n) & 0x7ff) << 11)
+#define	  SOLO_VO_V_LEN(n)			((n) & 0x7ff)
 
 #define	SOLO_VO_DISP_CTRL			0x0310
 #define	  SOLO_VO_DISP_ON			(1 << 31)
