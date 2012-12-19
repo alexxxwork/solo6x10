@@ -246,11 +246,11 @@
 #define	  SOLO_VI_PB_VSTART(n)			(((n) & 0x3ff) << 12)
 #define	  SOLO_VI_PB_VSTOP(n)			((n) & 0x7ff)
 
-#define	SOLO_VI_MOSAIC(ch)			(0x0140 + ((ch)*4))
-#define	  SOLO_VI_MOSAIC_SX(x)			((x)<<24)
-#define	  SOLO_VI_MOSAIC_EX(x)			((x)<<16)
-#define	  SOLO_VI_MOSAIC_SY(x)			((x)<<8)
-#define	  SOLO_VI_MOSAIC_EY(x)			((x)<<0)
+#define	SOLO_VI_MOSAIC(ch)			(0x0140 + (((ch) & 15) << 2))
+#define	  SOLO_VI_MOSAIC_SX(n)			((n) << 24)
+#define	  SOLO_VI_MOSAIC_EX(n)			(((n) & 0xff) << 16)
+#define	  SOLO_VI_MOSAIC_SY(n)			(((n) & 0xff) << 8)
+#define	  SOLO_VI_MOSAIC_EY(n)			((n) & 0xff)
 
 #define	SOLO_VI_WIN_CTRL0(ch)			(0x0180 + ((ch)*4))
 #define	SOLO_VI_WIN_CTRL1(ch)			(0x01C0 + ((ch)*4))
