@@ -341,8 +341,8 @@
 #define	  SOLO_VO_ZOOM_VER_ON			(1 << 24)
 #define	  SOLO_VO_ZOOM_HOR_ON			(1 << 23)
 #define	  SOLO_VO_ZOOM_V_COMP			(1 << 22)
-#define	  SOLO_VO_ZOOM_SX(h)			(((h)/2)<<11)
-#define	  SOLO_VO_ZOOM_SY(v)			(((v)/2)<<0)
+#define	  SOLO_VO_ZOOM_SX(h)			(((h) & 0xffe) << 10)
+#define	  SOLO_VO_ZOOM_SY(v)			(((v) & 0xfff) >> 1)
 
 #define SOLO_VO_FREEZE_CTRL			0x031C
 #define	  SOLO_VO_FREEZE_ON			(1 << 1)
