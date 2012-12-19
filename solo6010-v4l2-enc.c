@@ -233,7 +233,7 @@ static void solo_motion_toggle(struct solo_enc_dev *solo_enc, int on)
 	solo_reg_write(solo_dev, SOLO_VI_MOT_CLEAR, mask);
 
 	solo_reg_write(solo_dev, SOLO_VI_MOT_ADR,
-		       SOLO_VI_MOTION_EN(solo_dev->motion_mask) |
+		       SOLO_VI_MOTION_ENABLE(solo_dev->motion_mask) |
 		       (SOLO_MOTION_EXT_ADDR(solo_dev) >> 16));
 
 	spin_unlock_irqrestore(&solo_enc->motion_lock, flags);

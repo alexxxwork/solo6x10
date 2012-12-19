@@ -273,7 +273,7 @@
 #define SOLO_VI_WIN_LIVE_AUTO_MUTE		0x0244
 
 #define	SOLO_VI_MOT_ADR				0x0260
-#define	  SOLO_VI_MOTION_EN(mask)		((mask)<<16)
+#define	  SOLO_VI_MOTION_ENABLE(mask)		((mask) << 16)
 #define	SOLO_VI_MOT_CTRL			0x0264
 #define	  SOLO_VI_MOTION_FRAME_COUNT(n)		((n)<<24)
 #define	  SOLO_VI_MOTION_SAMPLE_LENGTH(n)	((n)<<16)
