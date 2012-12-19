@@ -252,19 +252,19 @@
 #define	  SOLO_VI_MOSAIC_SY(n)			(((n) & 0xff) << 8)
 #define	  SOLO_VI_MOSAIC_EY(n)			((n) & 0xff)
 
-#define	SOLO_VI_WIN_CTRL0(ch)			(0x0180 + ((ch)*4))
-#define	SOLO_VI_WIN_CTRL1(ch)			(0x01C0 + ((ch)*4))
+#define	SOLO_VI_WIN_CTRL0(ch)			(0x0180 + (((ch) & 15) << 2))
+#define	SOLO_VI_WIN_CTRL1(ch)			(0x01C0 + (((ch) & 15) << 2))
 
-#define	  SOLO_VI_WIN_CHANNEL(n)		((n)<<28)
+#define	  SOLO_VI_WIN_CHANNEL(n)		((n) << 28)
 
-#define	  SOLO_VI_WIN_PIP(n)			((n)<<27)
-#define	  SOLO_VI_WIN_SCALE(n)			((n)<<24)
+#define	  SOLO_VI_WIN_PIP(n)			(((n) & 1) << 27)
+#define	  SOLO_VI_WIN_SCALE(n)			(((n) & 7) << 24)
 
-#define	  SOLO_VI_WIN_SX(x)			((x)<<12)
-#define	  SOLO_VI_WIN_EX(x)			((x)<<0)
+#define	  SOLO_VI_WIN_SX(x)			(((x) & 0xfff) << 12)
+#define	  SOLO_VI_WIN_EX(x)			((x) & 0xfff)
 
-#define	  SOLO_VI_WIN_SY(x)			((x)<<12)
-#define	  SOLO_VI_WIN_EY(x)			((x)<<0)
+#define	  SOLO_VI_WIN_SY(x)			(((x) & 0xfff) << 12)
+#define	  SOLO_VI_WIN_EY(x)			((x) & 0xfff)
 
 #define	SOLO_VI_WIN_ON(ch)			(0x0200 + ((ch)*4))
 
