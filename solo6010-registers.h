@@ -399,11 +399,11 @@
 #define	  SOLO_VO_OSG_BLINK_INTREVAL18		1
 
 #define SOLO_CAP_BASE				0x0400
-#define	  SOLO_CAP_MAX_PAGE(n)			((n)<<16)
-#define	  SOLO_CAP_BASE_ADDR(n)			((n)<<0)
+#define	  SOLO_CAP_MAX_PAGE(n)			((n) << 16)
+#define	  SOLO_CAP_BASE_ADDR(n)			((n) & 0xffff)
 #define SOLO_CAP_BTW				0x0404
-#define	  SOLO_CAP_PROG_BANDWIDTH(n)		((n)<<8)
-#define	  SOLO_CAP_MAX_BANDWIDTH(n)		((n)<<0)
+#define	  SOLO_CAP_PROG_BANDWIDTH(n)		(((n) & 0x3f) << 8)
+#define	  SOLO_CAP_MAX_BANDWIDTH(n)		((n) & 0xff)
 
 #define SOLO_DIM_SCALE1				0x0408
 #define SOLO_DIM_SCALE2				0x040C
