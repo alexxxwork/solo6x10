@@ -361,8 +361,8 @@
 #define SOLO_VO_BORDER_LINE_MASK		0x0338
 #define SOLO_VO_BORDER_FILL_MASK		0x033c
 
-#define SOLO_VO_BORDER_X(n)			(0x0340+((n)*4))
-#define SOLO_VO_BORDER_Y(n)			(0x0354+((n)*4))
+#define SOLO_VO_BORDER_X(n)			(0x0340 + (((n) % 5) << 2))
+#define SOLO_VO_BORDER_Y(n)			(0x0354 + (((n) % 5) << 2))
 
 #define SOLO_VO_CELL_EXT_SET			0x0368
 #define SOLO_VO_CELL_EXT_START			0x036c
